@@ -152,3 +152,4 @@ def test_aggiungi_simbolo():
     assert CodiceFiscale._aggiungi_simbolo("RS") == "RSX"
     assert CodiceFiscale._aggiungi_simbolo("A") == "AXX"
     assert CodiceFiscale._aggiungi_simbolo("RSS") == "RSS"  # Nessuna X se sono già 3 caratteri
+
