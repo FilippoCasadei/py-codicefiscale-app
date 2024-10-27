@@ -1,4 +1,5 @@
-from codice_fiscale import genera_codice_fiscale, valida_cognome, valida_nome, valida_sesso, valida_data_nascita, valida_comune
+from codice_fiscale import (genera_codice_fiscale, valida_cognome, valida_nome,
+                            valida_sesso, valida_data_nascita, valida_comune)
 
 
 def acquisisci_dato(messaggio_da_stampare: str, funzione_validazione) -> str:
