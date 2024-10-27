@@ -11,8 +11,8 @@ CONVERSIONE_MESE_LETTERA = {
     '07': 'L', '08': 'M', '09': 'P', '10': 'R', '11': 'S', '12': 'T'
 }
 VAL_SOMMARE_GIORNO_FEMM = 40
-COMUNI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv('source/data/tabella_comuni.csv')
-STATI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv('source/data/tabella_comuni.csv')
+COMUNI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv(r'C:\Users\filo2\PycharmProjects\CodiceFiscale\source\data\tabella_comuni.csv')
+STATI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv(r'C:\Users\filo2\PycharmProjects\CodiceFiscale\source\data\tabella_stati.csv')
 COMUNI_E_STATI_COD_NAZIONALI = COMUNI_COD_NAZIONALI | STATI_COD_NAZIONALI
 CONVERSIONE_CARATTERI_PARI_DISPARI = {
     "0": (0, 1), "1": (1, 0), "2": (2, 5), "3": (3, 7), "4": (4, 9), "5": (5, 13), "6": (6, 15), "7": (7, 17),
