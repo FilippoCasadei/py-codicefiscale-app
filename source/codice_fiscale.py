@@ -12,8 +12,8 @@ CONVERSIONE_MESE_LETTERA = {
     '07': 'L', '08': 'M', '09': 'P', '10': 'R', '11': 'S', '12': 'T'
 }
 VAL_SOMMARE_GIORNO_FEMM = 40
-COMUNI = crea_dict_denominazione_codice_nazionale_da_csv('data/tabella_comuni.csv')
-STATI = crea_dict_denominazione_codice_nazionale_da_csv('data/tabella_comuni.csv')
+COMUNI = crea_dict_denominazione_codice_nazionale_da_csv('source/data/tabella_comuni.csv')
+STATI = crea_dict_denominazione_codice_nazionale_da_csv('source/data/tabella_comuni.csv')
 COMUNI_E_STATI = COMUNI | STATI   # Unione dei due dizionari (python 3.9+)
 CONVERSIONE_CARATTERI_PARI_DISPARI = {
     "0": (0, 1), "1": (1, 0), "2": (2, 5), "3": (3, 7), "4": (4, 9), "5": (5, 13), "6": (6, 15), "7": (7, 17),
@@ -30,7 +30,7 @@ class CodiceFiscale:
     Classe per la generazione del Codice Fiscale basata sui dati anagrafici di una persona.
     """
 
-    def __init__(self, cognome: str, nome: str, data_nascita: str, sesso: str, comune: str) -> None:
+    def __init__(self, cognome: str, nome: str, sesso: str, data_nascita: str, comune: str) -> None:
         """
         Inizializza la classe con i dati anagrafici della persona.
 
@@ -38,19 +38,17 @@ class CodiceFiscale:
         :type nome: str
         :param nome: Nome della persona
         :type cognome: str
-        :param data_nascita: Data di nascita (GG/MM/YYYY)
-        :type data_nascita: str
         :param sesso: Sesso della persona ('M' o 'F')
         :type sesso: str
+        :param data_nascita: Data di nascita (GG/MM/YYYY)
+        :type data_nascita: str
         :param comune: Comune o Stato di nascita
         :type comune: str
-
-        :raises ValueError: Se uno dei parametri non rispetta il formato atteso.
         """
         self.cognome = self._valida_cognome(cognome)
         self.nome = self._valida_nome(nome)
-        self.data_nascita = self._valida_data_nascita(data_nascita)
         self.sesso = self._valida_sesso(sesso)
+        self.data_nascita = self._valida_data_nascita(data_nascita)
         self.comune = self._valida_comune(comune)
 
     def genera_codice_fiscale(self) -> str:
@@ -246,7 +244,7 @@ class CodiceFiscale:
         :rtype: str
         :raises ValueError: Se il sesso non è valido.
         """
-        if sesso not in ('M', 'F'):
+        if sesso not in ("m", "M", "f", "F"):
             raise ValueError("Sesso non valido. Deve essere 'M' o 'F'.")
         return sesso
 
