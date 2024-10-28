@@ -203,6 +203,8 @@ def valida_data_nascita(data_nascita):
 
     if data_nascita > date.today():
         raise ValueError("Data di nascita non valida. Deve essere antecedente alla data odierna.")
+    elif data_nascita < datetime(1900, 1, 1).date():
+        raise ValueError("Data di nascita non valida. Sono valide solo le date che partono dal 01/01/1900.")
 
     return data_nascita.strftime("%d/%m/%Y")
 
