@@ -1,5 +1,7 @@
+# main.py
 from codice_fiscale import (genera_codice_fiscale, valida_cognome, valida_nome,
                             valida_sesso, valida_data_nascita, valida_comune)
+from gui import avvia_gui
 
 
 def acquisisci_dato(messaggio_da_stampare: str, funzione_validazione) -> str:
@@ -46,25 +48,23 @@ def acquisisci_dati_anagrafici() -> dict:
     return dati_anagrafici
 
 
-def main() -> None:
-    """Funzione principale del programma.
+def main():
+    scelta = input("Premi 'g' per avviare la GUI, 'c' per usare la linea di comando, 'q' per uscire: ")
 
-    Gestisce il ciclo principale per l'inserimento dei dati e la generazione del codice fiscale.
-    L'utente può scegliere di generare un nuovo codice fiscale o terminare il programma.
-    """
-    while True:
-        scelta = input("Premi invio per generare il codice fiscale, 'q' per terminare il programma:")
-        if scelta == "":
+    if scelta.lower() == 'g':
+        avvia_gui()
+    elif scelta.lower() == 'c':
+        while True:
             dati_anagrafici = acquisisci_dati_anagrafici()
-            codice_fiscale = genera_codice_fiscale(**dati_anagrafici)  # Unpacking del dizionario
+            codice_fiscale = genera_codice_fiscale(**dati_anagrafici)
             print(f"Codice Fiscale Generato: {codice_fiscale}")
-        elif scelta.lower() == 'q':
-            print("Programma terminato.")
-            break
-        else:
-            print("Input non valido. Riprova.")
+            if input("Generare un altro codice? (s/n): ").lower() != 's':
+                break
+    elif scelta.lower() == 'q':
+        print("Programma terminato.")
+    else:
+        print("Scelta non valida. Riprova.")
+        main()
 
-
-# Esegui il main solo se il file è eseguito come script principale
 if __name__ == "__main__":
     main()
