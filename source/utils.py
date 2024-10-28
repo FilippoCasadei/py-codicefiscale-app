@@ -1,4 +1,5 @@
 import csv
+import os
 import unicodedata
 
 
@@ -12,14 +13,11 @@ CONSONANTI = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', '
 ######################
 # FUNZIONI UTILITIES #
 ######################
-def _crea_dict_denominazione_codice_nazionale_da_csv(file_path: str) -> dict[str, str]:
+def _crea_dict_denominazione_codice_nazionale_da_csv(filename: str) -> dict[str, str]:
     """Crea un dizionario dai dati di un file CSV con denominazioni e codici nazionali.
 
-    Legge un file CSV contenente denominazioni e codici nazionali e crea un dizionario
-    che associa ogni denominazione al suo codice nazionale.
-
     Args:
-        file_path (str): Il percorso al file CSV.
+        filename (str): Il nome del file CSV nella directory 'data'.
 
     Returns:
         dict[str, str]: Dizionario con denominazioni italiane come chiavi e codici nazionali come valori.
@@ -28,6 +26,10 @@ def _crea_dict_denominazione_codice_nazionale_da_csv(file_path: str) -> dict[str
         FileNotFoundError: Se il file CSV non è trovato nel percorso specificato.
         KeyError: Se le colonne 'Denominazione Italiana' o 'Codice Nazionale' mancano nel CSV.
     """
+    # Calcola il percorso completo del file, partendo dalla directory in cui si trova utils.py
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(base_dir, 'data', filename)
+
     dizionario_codici_nazionali = {}
     with open(file_path, mode='r', encoding='latin1') as file:
         reader = csv.DictReader(file, delimiter=';')

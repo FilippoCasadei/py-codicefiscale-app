@@ -1,5 +1,5 @@
 import string
-from utils import _crea_dict_denominazione_codice_nazionale_da_csv, _formatta_stringa, _estrai_caratteri
+from source.utils import _crea_dict_denominazione_codice_nazionale_da_csv, _formatta_stringa, _estrai_caratteri
 from datetime import datetime, date
 
 
@@ -11,8 +11,8 @@ CONVERSIONE_MESE_LETTERA = {
     '07': 'L', '08': 'M', '09': 'P', '10': 'R', '11': 'S', '12': 'T'
 }
 VAL_SOMMARE_GIORNO_FEMM = 40
-COMUNI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv(r'C:\Users\filo2\PycharmProjects\CodiceFiscale\source\data\tabella_comuni.csv')
-STATI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv(r'C:\Users\filo2\PycharmProjects\CodiceFiscale\source\data\tabella_stati.csv')
+COMUNI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv("tabella_comuni.csv")
+STATI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv("tabella_stati.csv")
 COMUNI_E_STATI_COD_NAZIONALI = COMUNI_COD_NAZIONALI | STATI_COD_NAZIONALI
 CONVERSIONE_CARATTERI_PARI_DISPARI = {
     "0": (0, 1), "1": (1, 0), "2": (2, 5), "3": (3, 7), "4": (4, 9), "5": (5, 13), "6": (6, 15), "7": (7, 17),
@@ -132,7 +132,7 @@ def calcola_carattere_controllo(codice_senza_controllo):
 # FUNZIONI DI VALIDAZIONE #
 ###########################
 def valida_cognome(cognome):
-    """Valida il cognome, verificando che contenga solo lettere, accenti, apostrofi e spazi.
+    """Valida il cognome, verificando che contenga solo lettere, accenti, apostrofi trattini e spazi.
 
     Args:
         cognome (str): Cognome della persona.
@@ -143,13 +143,14 @@ def valida_cognome(cognome):
     Raises:
         ValueError: Se il cognome è troppo corto/lungo o contiene caratteri non validi.
     """
-    if len(cognome) < 2 or len(cognome) > 50 or not all(char.isalpha() or char in ["'", " "] for char in cognome):
-        raise ValueError("Cognome non valido. Deve contenere solo lettere, accenti, apostrofi e spazi (2-50 caratteri).")
+    if len(cognome) < 2 or len(cognome) > 50 or not all(char.isalpha() or char in ["'", "-", " "] for char in cognome):
+        raise ValueError("Cognome non valido. Deve contenere solo lettere, accenti, apostrofi, "
+                         "trattini e spazi (2-50 caratteri).")
     return _formatta_stringa(cognome)
 
 
 def valida_nome(nome):
-    """Valida il nome, verificando che contenga solo lettere, accenti, apostrofi e spazi.
+    """Valida il nome, verificando che contenga solo lettere, accenti, apostrofi, trattini e spazi.
 
     Args:
         nome (str): Nome della persona.
@@ -160,8 +161,9 @@ def valida_nome(nome):
     Raises:
         ValueError: Se il nome è troppo corto/lungo o contiene caratteri non validi.
     """
-    if len(nome) < 2 or len(nome) > 50 or not all(char.isalpha() or char in ["'", " "] for char in nome):
-        raise ValueError("Nome non valido. Deve contenere solo lettere, accenti, apostrofi e spazi (2-50 caratteri).")
+    if len(nome) < 2 or len(nome) > 50 or not all(char.isalpha() or char in ["'", "-", " "] for char in nome):
+        raise ValueError("Nome non valido. Deve contenere solo lettere, accenti, apostrofi, "
+                         "trattini e spazi (2-50 caratteri).")
     return _formatta_stringa(nome)
 
 
