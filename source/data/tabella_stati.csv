@@ -1,4 +1,4 @@
-Stato(S)/Territorio(T);Codice Continente;Denominazione Continente (IT);Codice Area;Denominazione Area (IT);Codice ISTAT;Denominazione Italiana;Denominazione EN;Codice MIN;Codice Nazionale;Codice UNSD_M49;Codice ISO 3166 alpha2;Codice ISO 3166 alpha3;Codice ISTAT_Stato Padre;Codice ISO alpha3_Stato Padre
+Stato(S)/Territorio(T);Codice Continente;Denominazione Continente (IT);Codice Area;Denominazione Area (IT);Codice ISTAT;Denominazione Italiana;Denominazione EN;Codice MIN;Codice Catastale;Codice UNSD_M49;Codice ISO 3166 alpha2;Codice ISO 3166 alpha3;Codice ISTAT_Stato Padre;Codice ISO alpha3_Stato Padre
 S;1;Europa;11;Unione europea;100;Italia;Italy;100;n.d.;380;IT;ITA;;
 S;1;Europa;12;Europa centro orientale;201;Albania;Albania;201;Z100;008;AL;ALB;;
 S;1;Europa;13;Altri paesi europei;202;Andorra;Andorra;202;Z101;020;AD;AND;;

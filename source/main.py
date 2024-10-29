@@ -48,7 +48,7 @@ def acquisisci_dati_anagrafici() -> dict:
 
 
 def main():
-    scelta = input("Premi 'g' per avviare la GUI, 'c' per usare la linea di comando, 'q' per uscire: ")
+    scelta = input("Premi 'g' per avviare la GUI, 'c' per usare la linea di comando, 'q' per terminare il programma: ")
 
     if scelta.lower() == 'g':
         avvia_gui()
@@ -57,7 +57,7 @@ def main():
             dati_anagrafici = acquisisci_dati_anagrafici()
             codice_fiscale = genera_codice_fiscale(**dati_anagrafici)
             print(f"Codice Fiscale Generato: {codice_fiscale}")
-            if input("Generare un altro codice? (s/n): ").lower() != 's':
+            if input("Generare un altro codice? (y/n): ").lower() != 'y':
                 break
     elif scelta.lower() == 'q':
         print("Programma terminato.")

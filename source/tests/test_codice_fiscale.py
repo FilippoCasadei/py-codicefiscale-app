@@ -1,20 +1,15 @@
 import pytest
 from source.codice_fiscale import *
 
-# COSA FARE?
-# FINIRE I TEST
-# DEFINIRE BENE PERCORSI RELATIVI (SI POTREBBE USARE os)
-# tests/test_codifica.py
-
 
 #######################################
 # TEST PER GENERAZIONE CODICE FISCALE #
 #######################################
 @pytest.mark.parametrize("cognome, nome, sesso, data_nascita, comune, expected", [
-    ("Rossi", "Mario", "M", "01/01/1985", "Roma", "RSSMRA85M01H501Z"),    # Caso standard maschile
-    ("Martini", "Mattia", "M", "09/04/1925", "Milano", "MRTMTT25D09F205B"), # Caso standard maschile con data diversa
-    ("Bianchi", "Lara", "F", "20/11/1998", "Milano", "BLTTLR98S20F205X"),  # Caso standard femminile
-    ("Giorgi", "Maria", "M", "10/08/1985", "Lecce", "GRGMRA85M10L219C"),   # Caso maschile con comune diverso
+    ("Rossi", "Mario", "M", "01/01/1985", "Roma", "RSSMRA85A01H501Z"),    # Caso standard maschile 1
+    ("Martini", "Mattia", "M", "09/04/1925", "Milano", "MRTMTT25D09F205Z"), # Caso standard maschile 2
+    ("Bianchi", "Lara", "F", "20/11/1998", "Milano", "BNCLRA98S60F205E"),  # Caso standard femminile 1
+    ("Giorgi", "Maria", "F", "10/08/1985", "Lecce", "GRGMRA85M50E506R"),   # Caso standard femminile 2
 ])
 def test_genera_codice_fiscale(cognome, nome, sesso, data_nascita, comune, expected):
     assert genera_codice_fiscale(cognome, nome, sesso, data_nascita, comune) == expected
@@ -80,10 +75,10 @@ def test_codifica_comune(comune, expected):
 # TEST PER CALCOLO CARATTERE DI CONTROLLO #
 ###########################################
 @pytest.mark.parametrize("codice_senza_controllo, expected", [
-    ("RSSMRA85M01H501", "Z"),  # Codice parziale per "Rossi Mario", maschio, 01/01/1985, Roma
-    ("MRTMTT25D09F205", "B"),  # Codice parziale per "Martini Mattia", maschio, 09/04/1925, Milano
-    ("BLTTLR98S20F205", "X"),  # Codice parziale per "Bianchi Lara", femmina, 20/11/1998, Milano
-    ("GRGMRA85M10L219", "C"),  # Codice parziale per "Giorgi Maria", maschio, 10/08/1985, Lecce
+    ("RSSMRA85M01H501", "Q"),  # Codice parziale per "Rossi Mario", maschio, 01/01/1985, Roma
+    ("MRTMTT25D09F205", "Z"),  # Codice parziale per "Martini Mattia", maschio, 09/04/1925, Milano
+    ("BLTTLR98S20F205", "C"),  # Codice parziale per "Bianchi Lara", femmina, 20/11/1998, Milano
+    ("GRGMRA85M10L219", "T"),  # Codice parziale per "Giorgi Maria", maschio, 10/08/1985, Lecce
 ])
 def test_calcola_carattere_controllo(codice_senza_controllo, expected):
     assert calcola_carattere_controllo(codice_senza_controllo) == expected

@@ -1,18 +1,31 @@
-import tkinter as tk
-from tkinter import messagebox, font, ttk
-from tkcalendar import Calendar
+import customtkinter as ctk
+from tkinter import messagebox
+from datetime import datetime
 from codice_fiscale import (genera_codice_fiscale, valida_cognome, valida_nome,
                             valida_sesso, valida_data_nascita, valida_comune)
+
 
 def genera_codice():
     """Genera il codice fiscale basato sui dati dell'interfaccia grafica."""
     try:
         cognome = valida_cognome(entry_cognome.get())
         nome = valida_nome(entry_nome.get())
-        sesso = valida_sesso(combo_sesso.get())
-        data_nascita = calendar.get_date()
+
+        # Conversione del sesso selezionato
+        sesso = "M" if combo_sesso.get() == "Maschio" else "F"
+
+        # Formattazione della data
+        giorno = combo_giorno.get().zfill(2)  # Formato GG
+        mese = combo_mese.get().zfill(2)      # Formato MM
+        anno = combo_anno.get()               # Formato AAAA
+        data_nascita = f"{giorno}/{mese}/{anno}"
+
+        # Validazione della data
+        valida_data_nascita(data_nascita)
+
         comune = valida_comune(entry_comune.get())
 
+        # Generazione del codice fiscale
         codice_fiscale = genera_codice_fiscale(
             cognome=cognome,
             nome=nome,
@@ -20,65 +33,96 @@ def genera_codice():
             data_nascita=data_nascita,
             comune=comune
         )
-        label_output.config(text=f"Codice Fiscale: {codice_fiscale}", fg="#4CAF50")
+
+        # Visualizza l'etichetta e il campo di output e mostra il codice generato
+        label_codice_fiscale.pack(anchor="w", padx=10)
+        entry_output.configure(state="normal")
+        entry_output.delete(0, ctk.END)
+        entry_output.insert(0, codice_fiscale)
+        entry_output.pack(pady=10, padx=10, fill="x")
+        entry_output.configure(state="readonly")  # Blocca il campo dopo l'inserimento
     except ValueError as e:
         messagebox.showerror("Errore di validazione", str(e))
 
 
 def avvia_gui():
     """Configura e avvia l'interfaccia grafica."""
-    global entry_cognome, entry_nome, combo_sesso, calendar, entry_comune, label_output
+    global entry_cognome, entry_nome, combo_sesso, combo_giorno, combo_mese, combo_anno, entry_comune, entry_output, label_codice_fiscale
 
-    # Configurazione della finestra principale
-    root = tk.Tk()
+    # Configurazione finestra principale
+    ctk.set_appearance_mode("System")  # Tema chiaro/scuro automatico
+    root = ctk.CTk()
     root.title("Generatore di Codice Fiscale")
-    root.geometry("500x450")  # Dimensione aumentata
-    root.state("zoomed")  # Apertura a schermo intero
-    root.configure(bg="#F5F5F5")  # Sfondo chiaro
+    root.geometry("500x700")
+    root.configure(bg="#F5F5F5")
 
-    # Font personalizzati
-    titolo_font = font.Font(family="Helvetica", size=16, weight="bold")
-    label_font = font.Font(family="Helvetica", size=10)
-    entry_font = font.Font(family="Helvetica", size=10)
-
-    # Frame centrale per i widget
-    main_frame = tk.Frame(root, bg="#F5F5F5", padx=20, pady=20)
-    main_frame.pack(expand=True)
+    # Frame principale per i widget
+    main_frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#F0F0F0")
+    main_frame.pack(padx=20, pady=20, fill="both", expand=True)
 
     # Titolo
-    tk.Label(main_frame, text="Generatore di Codice Fiscale", font=titolo_font, bg="#F5F5F5", fg="#333").grid(row=0, column=0, columnspan=2, pady=(0, 15))
+    title_label = ctk.CTkLabel(main_frame, text="GENERATORE DI CODICE FISCALE", font=("Helvetica", 18, "bold"), text_color="#333333")
+    title_label.pack(pady=(10, 20))
 
-    # Campi di input con etichette
-    tk.Label(main_frame, text="Cognome:", font=label_font, bg="#F5F5F5").grid(row=1, column=0, sticky="e", pady=5)
-    entry_cognome = tk.Entry(main_frame, font=entry_font, width=25)
-    entry_cognome.grid(row=1, column=1, pady=5)
+    # Campo Cognome
+    label_cognome = ctk.CTkLabel(main_frame, text="COGNOME", font=("Helvetica", 12, "bold"), text_color="#333333")
+    label_cognome.pack(anchor="w", padx=10)
+    entry_cognome = ctk.CTkEntry(main_frame, placeholder_text="Inserisci il cognome", font=("Helvetica", 12))
+    entry_cognome.pack(pady=5, padx=10, fill="x")
 
-    tk.Label(main_frame, text="Nome:", font=label_font, bg="#F5F5F5").grid(row=2, column=0, sticky="e", pady=5)
-    entry_nome = tk.Entry(main_frame, font=entry_font, width=25)
-    entry_nome.grid(row=2, column=1, pady=5)
+    # Campo Nome
+    label_nome = ctk.CTkLabel(main_frame, text="NOME", font=("Helvetica", 12, "bold"), text_color="#333333")
+    label_nome.pack(anchor="w", padx=10)
+    entry_nome = ctk.CTkEntry(main_frame, placeholder_text="Inserisci il nome", font=("Helvetica", 12))
+    entry_nome.pack(pady=5, padx=10, fill="x")
 
-    # Combobox per la scelta del sesso
-    tk.Label(main_frame, text="Sesso:", font=label_font, bg="#F5F5F5").grid(row=3, column=0, sticky="e", pady=5)
-    combo_sesso = ttk.Combobox(main_frame, values=["M", "F"], font=entry_font, width=23, state="readonly")
-    combo_sesso.grid(row=3, column=1, pady=5)
-    combo_sesso.set("M")  # Imposta il valore predefinito
+    # Campo Sesso
+    label_sesso = ctk.CTkLabel(main_frame, text="SESSO", font=("Helvetica", 12, "bold"), text_color="#333333")
+    label_sesso.pack(anchor="w", padx=10)
+    combo_sesso = ctk.CTkComboBox(main_frame, values=["Maschio", "Femmina"], font=("Helvetica", 12))
+    combo_sesso.set("Maschio")
+    combo_sesso.pack(pady=5, padx=10, fill="x")
 
-    # Calendario per la scelta della data di nascita
-    tk.Label(main_frame, text="Data di nascita:", font=label_font, bg="#F5F5F5").grid(row=4, column=0, sticky="e", pady=5)
-    calendar = Calendar(main_frame, date_pattern="dd/mm/yyyy", font=entry_font)
-    calendar.grid(row=4, column=1, pady=5)
+    # Sezione per la data di nascita
+    date_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+    date_frame.pack(pady=10, padx=10, fill="x")
 
-    # Campo di input per il comune
-    tk.Label(main_frame, text="Comune o Stato di nascita:", font=label_font, bg="#F5F5F5").grid(row=5, column=0, sticky="e", pady=5)
-    entry_comune = tk.Entry(main_frame, font=entry_font, width=25)
-    entry_comune.grid(row=5, column=1, pady=5)
+    label_data = ctk.CTkLabel(date_frame, text="DATA DI NASCITA", font=("Helvetica", 12, "bold"), text_color="#333333")
+    label_data.grid(row=0, column=0, columnspan=3, pady=(0, 5), sticky="w")
+
+    # ComboBox per il giorno
+    giorni = [str(i).zfill(2) for i in range(1, 32)]
+    combo_giorno = ctk.CTkComboBox(date_frame, values=giorni, font=("Helvetica", 12), width=60)
+    combo_giorno.grid(row=1, column=0, padx=5)
+
+    # ComboBox per il mese
+    mesi = [str(i).zfill(2) for i in range(1, 13)]
+    combo_mese = ctk.CTkComboBox(date_frame, values=mesi, font=("Helvetica", 12), width=60)
+    combo_mese.grid(row=1, column=1, padx=5)
+
+    # ComboBox per l'anno
+    current_year = datetime.now().year
+    anni = [str(i) for i in range(1900, current_year + 1)]
+    combo_anno = ctk.CTkComboBox(date_frame, values=anni, font=("Helvetica", 12), width=80)
+    combo_anno.grid(row=1, column=2, padx=5)
+
+    # Campo Comune
+    label_comune = ctk.CTkLabel(main_frame, text="LUOGO DI NASCITA", font=("Helvetica", 12, "bold"), text_color="#333333")
+    label_comune.pack(anchor="w", padx=10)
+    entry_comune = ctk.CTkEntry(main_frame, placeholder_text="Inserisci il comune", font=("Helvetica", 12))
+    entry_comune.pack(pady=5, padx=10, fill="x")
 
     # Bottone per generare il codice fiscale
-    btn_generare = tk.Button(main_frame, text="Genera Codice Fiscale", command=genera_codice, bg="#4CAF50", fg="white", font=("Helvetica", 10, "bold"), padx=10, pady=5)
-    btn_generare.grid(row=6, column=0, columnspan=2, pady=15)
+    btn_generare = ctk.CTkButton(main_frame, text="Genera Codice Fiscale", command=genera_codice, fg_color="#4CAF50", font=("Helvetica", 12, "bold"))
+    btn_generare.pack(pady=20)
 
-    # Etichetta per l'output del codice fiscale generato
-    label_output = tk.Label(main_frame, text="", bg="#F5F5F5", font=("Helvetica", 10, "italic"))
-    label_output.grid(row=7, column=0, columnspan=2, pady=(10, 0))
+    # Etichetta e campo di output per il codice fiscale (inizialmente nascosti)
+    label_codice_fiscale = ctk.CTkLabel(main_frame, text="CODICE FISCALE", font=("Helvetica", 12, "bold"), text_color="#333333")
+    entry_output = ctk.CTkEntry(main_frame, font=("Helvetica", 12, "bold"), state="readonly")
 
     root.mainloop()
+
+
+# Chiamare la funzione di avvio GUI solo quando esplicitamente chiamata
+if __name__ == "__main__":
+    avvia_gui()

@@ -13,32 +13,32 @@ CONSONANTI = {'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', '
 ######################
 # FUNZIONI UTILITIES #
 ######################
-def _crea_dict_denominazione_codice_nazionale_da_csv(filename: str) -> dict[str, str]:
-    """Crea un dizionario dai dati di un file CSV con denominazioni e codici nazionali.
+def _crea_dict_denominazione_codice_catastale_da_csv(filename: str) -> dict[str, str]:
+    """Crea un dizionario dai dati di un file CSV con denominazioni e codici catastali.
 
     Args:
         filename (str): Il nome del file CSV nella directory 'data'.
 
     Returns:
-        dict[str, str]: Dizionario con denominazioni italiane come chiavi e codici nazionali come valori.
+        dict[str, str]: Dizionario con denominazioni italiane come chiavi e codici catastali come valori.
 
     Raises:
         FileNotFoundError: Se il file CSV non è trovato nel percorso specificato.
-        KeyError: Se le colonne 'Denominazione Italiana' o 'Codice Nazionale' mancano nel CSV.
+        KeyError: Se le colonne 'Denominazione Italiana' o 'Codice Catastale' mancano nel CSV.
     """
     # Calcola il percorso completo del file, partendo dalla directory in cui si trova utils.py
     base_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_dir, 'data', filename)
 
-    dizionario_codici_nazionali = {}
+    dizionario_codici_catastali = {}
     with open(file_path, mode='r', encoding='latin1') as file:
         reader = csv.DictReader(file, delimiter=';')
         for row in reader:
             denominazione = row.get("Denominazione Italiana").upper()
-            codice_nazionale = row.get("Codice Nazionale")
-            if denominazione and codice_nazionale:  # Salta le righe incomplete
-                dizionario_codici_nazionali[denominazione] = codice_nazionale
-    return dizionario_codici_nazionali
+            codice_catastale = row.get("Codice Catastale")
+            if denominazione and codice_catastale:  # Salta le righe incomplete
+                dizionario_codici_catastali[denominazione] = codice_catastale
+    return dizionario_codici_catastali
 
 
 def _formatta_stringa(stringa: str) -> str:

@@ -1,5 +1,5 @@
 import string
-from source.utils import _crea_dict_denominazione_codice_nazionale_da_csv, _formatta_stringa, _estrai_caratteri
+from source.utils import _crea_dict_denominazione_codice_catastale_da_csv, _formatta_stringa, _estrai_caratteri
 from datetime import datetime, date
 
 
@@ -11,9 +11,9 @@ CONVERSIONE_MESE_LETTERA = {
     '07': 'L', '08': 'M', '09': 'P', '10': 'R', '11': 'S', '12': 'T'
 }
 VAL_SOMMARE_GIORNO_FEMM = 40
-COMUNI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv("tabella_comuni.csv")
-STATI_COD_NAZIONALI = _crea_dict_denominazione_codice_nazionale_da_csv("tabella_stati.csv")
-COMUNI_E_STATI_COD_NAZIONALI = COMUNI_COD_NAZIONALI | STATI_COD_NAZIONALI
+COMUNI_COD_CATASTALI = _crea_dict_denominazione_codice_catastale_da_csv("tabella_comuni.csv")
+STATI_COD_CATASTALI = _crea_dict_denominazione_codice_catastale_da_csv("tabella_stati.csv")
+COMUNI_E_STATI_COD_CATASTALI = COMUNI_COD_CATASTALI | STATI_COD_CATASTALI
 CONVERSIONE_CARATTERI_PARI_DISPARI = {
     "0": (0, 1), "1": (1, 0), "2": (2, 5), "3": (3, 7), "4": (4, 9), "5": (5, 13), "6": (6, 15), "7": (7, 17),
     "8": (8, 19), "9": (9, 21), "A": (0, 1), "B": (1, 0), "C": (2, 5), "D": (3, 7), "E": (4, 9), "F": (5, 13),
@@ -108,7 +108,7 @@ def codifica_comune(comune):
         str: Codice catastale del comune o stato di nascita.
     """
     comune = valida_comune(comune)
-    return COMUNI_E_STATI_COD_NAZIONALI[comune]
+    return COMUNI_E_STATI_COD_CATASTALI[comune]
 
 
 def calcola_carattere_controllo(codice_senza_controllo):
@@ -131,6 +131,52 @@ def calcola_carattere_controllo(codice_senza_controllo):
 ###########################
 # FUNZIONI DI VALIDAZIONE #
 ###########################
+def valida_codice_fiscale(codice_fiscale: str) -> bool:
+    """Valida se il codice fiscale ha un formato corretto, il carattere di controllo è valido e le sezioni rispettano i requisiti specifici.
+
+    Args:
+        codice_fiscale (str): Codice fiscale da verificare.
+
+    Returns:
+        bool: True se il codice fiscale è valido, altrimenti genera errore specifico.
+
+    Raises:
+        ValueError: Se il codice fiscale è malformato o non valido.
+    """
+    # Controllo lunghezza
+    if len(codice_fiscale) != 16:
+        raise ValueError("Codice fiscale non valido. Deve essere lungo 16 caratteri.")
+
+    # Normalizzazione in maiuscolo per sicurezza
+    codice_fiscale = codice_fiscale.upper()
+
+    # Controllo formato specifico per ciascun gruppo di caratteri
+    if not (codice_fiscale[:3].isalpha()):
+        raise ValueError("Codice fiscale non valido. Posizioni 1-3 devono essere lettere per cognome (RSS per ROSSI).")
+    if not (codice_fiscale[3:6].isalpha()):
+        raise ValueError("Codice fiscale non valido. Posizioni 4-6 devono essere lettere per nome (MRA per MARIO).")
+    if not (codice_fiscale[6:8].isdigit()):
+        raise ValueError("Codice fiscale non valido. Posizioni 7-8 devono essere numeri per anno (98 per 1998)")
+    if not (codice_fiscale[8].isalpha()):
+        raise ValueError("Codice fiscale non valido. Posizione 9 deve essere una lettere per mese (A per GENNAIO)")
+    if not (codice_fiscale[9:11].isdigit() and (1 <= int(codice_fiscale[9:11]) <= 71)):
+        raise ValueError("Codice fiscale non valido. Posizioni 10-11 devono rappresentare un numero tra 01 e 71 "
+                         "per giorno (01 per 01 se maschio, 41 per 01 se femmina)")
+    if not (codice_fiscale[11:15] in COMUNI_E_STATI_COD_CATASTALI.values()):
+        raise ValueError("Codice fiscale non valido. Posizioni 12-15 devono rappresentare un valido codice catastale "
+                         "di un luogo geograficico (H501 per ROMA).")
+
+    # Verifica il carattere di controllo
+    codifica_senza_carattere_controllo = codice_fiscale[:15]
+    carattere_controllo = codice_fiscale[-1]
+    carattere_controllo_calcolato = calcola_carattere_controllo(codifica_senza_carattere_controllo)
+    if carattere_controllo_calcolato != carattere_controllo:
+        raise ValueError("Codice fiscale non valido. Il carattere di controllo non corrisponde.")
+
+    return True
+
+
+
 def valida_cognome(cognome):
     """Valida il cognome, verificando che contenga solo lettere, accenti, apostrofi trattini e spazi.
 
@@ -222,6 +268,6 @@ def valida_comune(comune):
         ValueError: Se il comune non esiste nel database.
     """
     comune = comune.upper()
-    if comune not in COMUNI_E_STATI_COD_NAZIONALI:
+    if comune not in COMUNI_E_STATI_COD_CATASTALI:
         raise ValueError("Comune/Stato non valido. Deve essere presente un comune o uno stato estero esistente.")
     return comune
