@@ -1,6 +1,7 @@
 from codice_fiscale import (genera_codice_fiscale, valida_cognome, valida_nome,
                             valida_sesso, valida_data_nascita, valida_comune)
 from gui import avvia_gui
+from source.codice_fiscale import is_valido_codice_fiscale
 
 
 def acquisisci_dato(messaggio_da_stampare: str, funzione_validazione) -> str:
@@ -47,18 +48,46 @@ def acquisisci_dati_anagrafici() -> dict:
     return dati_anagrafici
 
 
+def avvia_linea_di_comando() -> None:
+    scelta_generazione_o_valida = input("Premi 'g' per la generazione di un codice fiscale, 'v' per la "
+                                                "validazione di un codice fiscale: ")
+    if scelta_generazione_o_valida == 'g':
+        avvia_generazione_codice_fiscale()
+    elif scelta_generazione_o_valida == 'v':
+        avvia_validazione_codice_fiscale()
+    else:
+        print("Scelta non valida. Riprova.")
+        avvia_linea_di_comando()
+
+
+def avvia_generazione_codice_fiscale() -> None:
+    while True:
+        dati_anagrafici = acquisisci_dati_anagrafici()
+        codice_fiscale = genera_codice_fiscale(**dati_anagrafici)
+        print(f"Codice Fiscale Generato: {codice_fiscale}")
+        if input("Generare un altro codice? (y/n): ").lower() != 'y':
+            break
+
+
+def avvia_validazione_codice_fiscale() -> None:
+    while True:
+        codice_fiscale = input("Inserisci il codice fiscale: ").upper()
+        try:
+            is_valido_codice_fiscale(codice_fiscale)
+            print("VALIDO")
+        except ValueError as e:
+            print(f"NON VALIDO: {e}")
+        if input("Validare un altro codice? (y/n): ").lower() != 'y':
+            break
+
+
 def main():
     scelta = input("Premi 'g' per avviare la GUI, 'c' per usare la linea di comando, 'q' per terminare il programma: ")
 
     if scelta.lower() == 'g':
         avvia_gui()
     elif scelta.lower() == 'c':
-        while True:
-            dati_anagrafici = acquisisci_dati_anagrafici()
-            codice_fiscale = genera_codice_fiscale(**dati_anagrafici)
-            print(f"Codice Fiscale Generato: {codice_fiscale}")
-            if input("Generare un altro codice? (y/n): ").lower() != 'y':
-                break
+        avvia_linea_di_comando()
     elif scelta.lower() == 'q':
         print("Programma terminato.")
     else:

@@ -131,7 +131,7 @@ def calcola_carattere_controllo(codice_senza_controllo):
 ###########################
 # FUNZIONI DI VALIDAZIONE #
 ###########################
-def valida_codice_fiscale(codice_fiscale: str) -> bool:
+def is_valido_codice_fiscale(codice_fiscale: str) -> bool:
     """Valida se il codice fiscale ha un formato corretto, il carattere di controllo è valido e le sezioni rispettano i requisiti specifici.
 
     Args:

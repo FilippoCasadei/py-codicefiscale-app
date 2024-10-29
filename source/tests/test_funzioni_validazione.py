@@ -2,7 +2,7 @@
 
 import pytest
 from datetime import datetime, timedelta
-from source.codice_fiscale import valida_codice_fiscale, valida_cognome, valida_nome, valida_sesso, valida_data_nascita, valida_comune
+from source.codice_fiscale import is_valido_codice_fiscale, valida_cognome, valida_nome, valida_sesso, valida_data_nascita, valida_comune
 
 
 #######################################
@@ -13,9 +13,9 @@ from source.codice_fiscale import valida_codice_fiscale, valida_cognome, valida_
     "CLDSCH69D55H294C",  # Codice fiscale corretto 2 "Claudia", "Sanchi", "F", "15/04/1969", "Rimini"
     "CRSRLD00A01F205F",  # Codice fiscale corretto 3 "Cristiano", "Ronaldo", "M", "01/01/2000", "Milano"
 ])
-def test_valida_codice_fiscale_valido(codice_fiscale):
+def test_is_valido_codice_fiscale_valido(codice_fiscale):
     """Testa codici fiscali validi per verificare che la funzione ritorni True."""
-    assert valida_codice_fiscale(codice_fiscale) is True
+    assert is_valido_codice_fiscale(codice_fiscale) is True
 
 
 @pytest.mark.parametrize("codice_fiscale, expected_error", [
@@ -28,10 +28,10 @@ def test_valida_codice_fiscale_valido(codice_fiscale):
     ("RSSMRA85M01X501Z", "Codice fiscale non valido. Posizioni 12-15 devono rappresentare un valido codice catastale"), # 'X510' non è un codice catastale
     ("RSSMRA85M01H501A", "Codice fiscale non valido. Il carattere di controllo non corrisponde.") # Carattere di controllo 'A' non valido
 ])
-def test_valida_codice_fiscale_non_valido(codice_fiscale, expected_error):
+def test_is_valido_codice_fiscale_non_valido(codice_fiscale, expected_error):
     """Testa codici fiscali non validi per verificare che venga sollevato l'errore corretto."""
     with pytest.raises(ValueError) as excinfo:
-        valida_codice_fiscale(codice_fiscale)
+        is_valido_codice_fiscale(codice_fiscale)
     assert str(excinfo.value).startswith(expected_error)
 
 
